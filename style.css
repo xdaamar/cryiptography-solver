@@ -1,0 +1,30 @@
+:root { --primary: #00ff41; --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --accent: #58a6ff; }
+body { font-family: 'Consolas', monospace; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; }
+
+.sidebar { width: 220px; background: var(--card); border-right: 1px solid #30363d; padding: 20px; flex-shrink: 0; }
+.sidebar h2 { color: var(--primary); font-size: 1rem; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+.menu-item { padding: 12px; cursor: pointer; border-radius: 5px; margin-bottom: 5px; transition: 0.2s; font-size: 0.9rem; }
+.menu-item:hover { background: #21262d; color: var(--primary); }
+.active { background: #21262d; border-left: 3px solid var(--primary); color: var(--primary); }
+
+.main { flex: 1; padding: 30px; overflow-y: auto; }
+.container { max-width: 1000px; margin: auto; }
+
+.input-group { margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--accent); }
+textarea { width: 100%; height: 120px; background: #010409; color: var(--primary); border: 1px solid #30363d; border-radius: 5px; padding: 12px; font-size: 1rem; resize: vertical; }
+input[type="text"] { width: 100%; padding: 10px; background: #010409; border: 1px solid #30363d; color: var(--primary); border-radius: 5px; }
+
+.result-card { background: var(--card); padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--primary); position: relative; }
+.badge { position: absolute; top: 10px; right: 10px; background: #238636; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; }
+.copy-btn { margin-top: 10px; background: #30363d; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+.copy-btn:hover { background: #58a6ff; }
+
+/* Frequency Bars */
+.freq-container { display: flex; align-items: flex-end; height: 100px; gap: 2px; margin-top: 20px; background: #010409; padding: 10px; border-radius: 5px; }
+.freq-bar { background: var(--primary); flex: 1; min-width: 10px; position: relative; }
+.freq-bar:hover::after { content: attr(data-label); position: absolute; top: -25px; left: 0; background: white; color: black; padding: 2px; font-size: 10px; border-radius: 3px; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #30363d; padding: 10px; text-align: left; }
+th { background: #21262d; }

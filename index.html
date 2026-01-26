@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptography Toolkit</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>⚡ HACKER ABAL - ABAL</h2>
+    <div class="menu-item active" onclick="showSection('decoder')">🔓 Auto Decoder</div>
+    <div class="menu-item" onclick="showSection('cheatsheet')">📜 Pattern Guide</div>
+</div>
+
+<div class="main">
+    <div id="decoder-section" class="container">
+        <h1>Cryptography Solver</h1>
+        
+        <div class="input-group">
+            <label>Ciphertext / Input</label>
+            <textarea id="input-text" placeholder="Paste flag or encrypted text..." oninput="processAll()"></textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Key (Optional - for Vigenere)</label>
+            <input type="text" id="cipher-key" placeholder="Enter key..." oninput="processAll()">
+        </div>
+
+        <div id="analysis-results">
+            </div>
+
+        <div id="freq-analysis-area" style="display:none;">
+            <h3>Character Frequency Analysis</h3>
+            <div class="freq-container" id="freq-bars"></div>
+        </div>
+    </div>
+
+    <div id="cheatsheet-section" class="container" style="display:none;">
+        <h1>Quick Reference Patterns</h1>
+        <table>
+            <tr><th>Format</th><th>Kemungkinan Enkripsi</th></tr>
+            <tr><td><code>picoCTF{...}</code></td><td>Flag Format</td></tr>
+            <tr><td><code>.... . .-.. .-.. ---</code></td><td>Morse Code</td></tr>
+            <tr><td><code>[0-9a-f]{32}</code></td><td>MD5 Hash</td></tr>
+            <tr><td><code>[0-9a-f]{40}</code></td><td>SHA-1 Hash</td></tr>
+            <tr><td><code>[a-zA-Z0-9+/]=</code></td><td>Base64</td></tr>
+        </table>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
