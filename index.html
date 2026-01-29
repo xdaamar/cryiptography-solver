@@ -2,55 +2,39 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cryptography Toolkit</title>
+    <title>CTF Super</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>⚡ HACKER ABAL - ABAL</h2>
-    <div class="menu-item active" onclick="showSection('decoder')">🔓 Auto Decoder</div>
-    <div class="menu-item" onclick="showSection('cheatsheet')">📜 Pattern Guide</div>
+    <h2>ADALAH POKONYA</h2>
+    <div class="nav-item active" onclick="switchPage('decoder')">🔍 Auto Decoder</div>
+    <div class="nav-item" onclick="switchPage('rsa')">🔑 RSA Solver</div>
 </div>
 
-<div class="main">
-    <div id="decoder-section" class="container">
-        <h1>Cryptography Solver</h1>
-        
-        <div class="input-group">
-            <label>Ciphertext / Input</label>
-            <textarea id="input-text" placeholder="Paste flag or encrypted text..." oninput="processAll()"></textarea>
-        </div>
-
-        <div class="input-group">
-            <label>Key (Optional - for Vigenere)</label>
-            <input type="text" id="cipher-key" placeholder="Enter key..." oninput="processAll()">
-        </div>
-
-        <div id="analysis-results">
-            </div>
-
-        <div id="freq-analysis-area" style="display:none;">
-            <h3>Character Frequency Analysis</h3>
-            <div class="freq-container" id="freq-bars"></div>
-        </div>
+<div class="main-content">
+    <div id="decoder" class="page active">
+        <h1>Auto Decoder</h1>
+        <p>Input ciphertext untuk deteksi otomatis (Base64, Hex, A1Z26, Caesar).</p>
+        <textarea id="dec-input" placeholder="Masukkan ciphertext..." oninput="autoDecode()"></textarea>
+        <div id="dec-results"></div>
     </div>
 
-    <div id="cheatsheet-section" class="container" style="display:none;">
-        <h1>Quick Reference Patterns</h1>
-        <table>
-            <tr><th>Format</th><th>Kemungkinan Enkripsi</th></tr>
-            <tr><td><code>picoCTF{...}</code></td><td>Flag Format</td></tr>
-            <tr><td><code>.... . .-.. .-.. ---</code></td><td>Morse Code</td></tr>
-            <tr><td><code>[0-9a-f]{32}</code></td><td>MD5 Hash</td></tr>
-            <tr><td><code>[0-9a-f]{40}</code></td><td>SHA-1 Hash</td></tr>
-            <tr><td><code>[a-zA-Z0-9+/]=</code></td><td>Base64</td></tr>
-        </table>
+    <div id="rsa" class="page">
+        <h1>RSA Batch GCD Solver</h1>
+        <p>Gunakan untuk memecahkan $N_1$ dan $N_2$ yang berbagi faktor prima.</p>
+        <div class="card">
+            <input type="text" id="rsa-n1" placeholder="Masukkan N1">
+            <input type="text" id="rsa-n2" placeholder="Masukkan N2">
+            <input type="text" id="rsa-e" placeholder="Public Exponent e (default: 65537)" value="65537">
+            <input type="text" id="rsa-c" placeholder="Ciphertext (C)">
+            <button onclick="solveRSA()">Hitung Flag</button>
+            <div id="rsa-result" class="result-box" style="display:none;"></div>
+        </div>
     </div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
