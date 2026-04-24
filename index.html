@@ -2,38 +2,221 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>CTF Super</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF Crypto Solver — Multi-Cipher Toolkit</title>
+    <meta name="description" content="Tool solver kriptografi otomatis untuk CTF: Base64, Hex, Caesar, Vigenere, Morse, ROT13, A1Z26, RSA, dan Hash Cracker.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CryptoJS Library (WAJIB untuk Hash Cracker) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>ADALAH POKONYA</h2>
-    <div class="nav-item active" onclick="switchPage('decoder')">🔍 Auto Decoder</div>
-    <div class="nav-item" onclick="switchPage('rsa')">🔑 RSA Solver</div>
+    <div class="sidebar-header">
+        <div class="logo-icon">🔐</div>
+        <h2>CTF Solver</h2>
+        <p class="logo-sub">Multi-Cipher Toolkit</p>
+    </div>
+    <nav>
+        <div class="nav-section-label">DECODERS</div>
+        <div class="nav-item active" id="nav-decoder" onclick="switchPage('decoder', this)">
+            <span class="nav-icon">🔍</span>
+            <span>Auto Decoder</span>
+        </div>
+        <div class="nav-item" id="nav-caesar" onclick="switchPage('caesar', this)">
+            <span class="nav-icon">🔄</span>
+            <span>Caesar / ROT</span>
+        </div>
+        <div class="nav-item" id="nav-vigenere" onclick="switchPage('vigenere', this)">
+            <span class="nav-icon">🗝️</span>
+            <span>Vigenere Cipher</span>
+        </div>
+        <div class="nav-item" id="nav-morse" onclick="switchPage('morse', this)">
+            <span class="nav-icon">📡</span>
+            <span>Morse Code</span>
+        </div>
+        <div class="nav-section-label">ADVANCED</div>
+        <div class="nav-item" id="nav-rsa" onclick="switchPage('rsa', this)">
+            <span class="nav-icon">🔑</span>
+            <span>RSA Solver</span>
+        </div>
+        <div class="nav-item" id="nav-hash" onclick="switchPage('hash', this)">
+            <span class="nav-icon">💀</span>
+            <span>Hash Cracker</span>
+        </div>
+    </nav>
+    <div class="sidebar-footer">v2.0 — Fixed & Enhanced</div>
 </div>
 
 <div class="main-content">
+
+    <!-- ========== AUTO DECODER ========== -->
     <div id="decoder" class="page active">
-        <h1>Auto Decoder</h1>
-        <p>Input ciphertext untuk deteksi otomatis (Base64, Hex, A1Z26, Caesar).</p>
-        <textarea id="dec-input" placeholder="Masukkan ciphertext..." oninput="autoDecode()"></textarea>
+        <div class="page-header">
+            <h1>🔍 Auto Decoder</h1>
+            <p>Input ciphertext untuk deteksi otomatis. Mendukung: <span class="badge">Base64</span> <span class="badge">Hex</span> <span class="badge">A1Z26</span> <span class="badge">Binary</span> <span class="badge">ROT13</span> <span class="badge">Caesar</span> <span class="badge">Morse</span> <span class="badge">Hash ID</span></p>
+        </div>
+        <div class="card">
+            <label class="input-label">Input Ciphertext</label>
+            <textarea id="dec-input" placeholder="Tempel ciphertext di sini, hasil akan muncul otomatis..." oninput="autoDecode()"></textarea>
+            <div class="toolbar">
+                <button class="btn-secondary" onclick="document.getElementById('dec-input').value=''; document.getElementById('dec-results').innerHTML=''">🗑️ Clear</button>
+                <button class="btn-secondary" onclick="pasteFromClipboard('dec-input')">📋 Paste</button>
+            </div>
+        </div>
         <div id="dec-results"></div>
     </div>
 
-    <div id="rsa" class="page">
-        <h1>RSA Batch GCD Solver</h1>
-        <p>Gunakan untuk memecahkan $N_1$ dan $N_2$ yang berbagi faktor prima.</p>
+    <!-- ========== CAESAR / ROT ========== -->
+    <div id="caesar" class="page">
+        <div class="page-header">
+            <h1>🔄 Caesar / ROT Decoder</h1>
+            <p>Brute force semua 25 kemungkinan shift Caesar, atau pilih shift tertentu. ROT13 adalah Caesar dengan shift 13.</p>
+        </div>
         <div class="card">
-            <input type="text" id="rsa-n1" placeholder="Masukkan N1">
-            <input type="text" id="rsa-n2" placeholder="Masukkan N2">
-            <input type="text" id="rsa-e" placeholder="Public Exponent e (default: 65537)" value="65537">
-            <input type="text" id="rsa-c" placeholder="Ciphertext (C)">
-            <button onclick="solveRSA()">Hitung Flag</button>
+            <label class="input-label">Input Teks Terenkripsi</label>
+            <textarea id="caesar-input" placeholder="Masukkan teks Caesar Cipher..."></textarea>
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="input-label">Specific Shift (0 = Brute Force All)</label>
+                    <input type="number" id="caesar-shift" placeholder="0" min="0" max="25" value="0">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Mode</label>
+                    <select id="caesar-mode">
+                        <option value="decode">Decode</option>
+                        <option value="encode">Encode</option>
+                    </select>
+                </div>
+            </div>
+            <div class="toolbar">
+                <button class="btn-primary" onclick="solveCaesar()">🔓 Solve Caesar</button>
+                <button class="btn-secondary" onclick="document.getElementById('caesar-input').value='13'; solveCaesar()">ROT13 Quick</button>
+            </div>
+        </div>
+        <div id="caesar-results"></div>
+    </div>
+
+    <!-- ========== VIGENERE ========== -->
+    <div id="vigenere" class="page">
+        <div class="page-header">
+            <h1>🗝️ Vigenere Cipher</h1>
+            <p>Enkripsi/dekripsi menggunakan Vigenere Cipher dengan kunci kata. Jika kunci tidak diketahui, gunakan frekuensi analisis.</p>
+        </div>
+        <div class="card">
+            <label class="input-label">Input Teks</label>
+            <textarea id="vig-input" placeholder="Masukkan ciphertext Vigenere..."></textarea>
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="input-label">Kunci (Key)</label>
+                    <input type="text" id="vig-key" placeholder="Contoh: SECRET">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Mode</label>
+                    <select id="vig-mode">
+                        <option value="decode">Decode</option>
+                        <option value="encode">Encode</option>
+                    </select>
+                </div>
+            </div>
+            <div class="toolbar">
+                <button class="btn-primary" onclick="solveVigenere()">🔓 Solve Vigenere</button>
+            </div>
+        </div>
+        <div id="vig-results"></div>
+    </div>
+
+    <!-- ========== MORSE CODE ========== -->
+    <div id="morse" class="page">
+        <div class="page-header">
+            <h1>📡 Morse Code</h1>
+            <p>Encode/decode Morse Code. Pisahkan huruf dengan spasi, pisahkan kata dengan <code>/</code>.</p>
+        </div>
+        <div class="card">
+            <label class="input-label">Input Teks / Morse Code</label>
+            <textarea id="morse-input" placeholder="Contoh Morse: .... . .-.. .-.. ---  /  .-- --- .-. .-.. -.."></textarea>
+            <div class="toolbar">
+                <button class="btn-primary" onclick="decodeMorse()">📡 Decode Morse</button>
+                <button class="btn-secondary" onclick="encodeMorse()">📨 Encode ke Morse</button>
+            </div>
+        </div>
+        <div id="morse-results"></div>
+    </div>
+
+    <!-- ========== RSA SOLVER ========== -->
+    <div id="rsa" class="page">
+        <div class="page-header">
+            <h1>🔑 RSA Batch GCD Solver</h1>
+            <p>Gunakan ketika dua nilai N berbagi faktor prima (Batch GCD Attack). Cocok untuk soal CTF RSA klasik.</p>
+        </div>
+        <div class="card">
+            <label class="input-label">N1 (Modulus pertama)</label>
+            <input type="text" id="rsa-n1" placeholder="Masukkan N1 (integer besar)">
+
+            <label class="input-label">N2 (Modulus kedua)</label>
+            <input type="text" id="rsa-n2" placeholder="Masukkan N2 (integer besar)">
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label class="input-label">Public Exponent (e)</label>
+                    <input type="text" id="rsa-e" value="65537" placeholder="65537">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Ciphertext (C)</label>
+                    <input type="text" id="rsa-c" placeholder="Masukkan nilai C">
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <button class="btn-primary" onclick="solveRSA()">⚡ Hitung Flag</button>
+            </div>
             <div id="rsa-result" class="result-box" style="display:none;"></div>
         </div>
     </div>
-</div>
+
+    <!-- ========== HASH CRACKER ========== -->
+    <div id="hash" class="page">
+        <div class="page-header">
+            <h1>💀 Hash Cracker</h1>
+            <p>Crack hash MD5/SHA1/SHA256 dengan dictionary attack menggunakan file wordlist (rockyou.txt, dll.). Berjalan 100% di browser.</p>
+        </div>
+        <div class="card">
+            <label class="input-label">Hash Target</label>
+            <input type="text" id="target-hash" placeholder="Masukkan hash (MD5/SHA1/SHA256)...">
+
+            <label class="input-label">Tipe Hash</label>
+            <select id="hash-type">
+                <option value="MD5">MD5 (32 karakter)</option>
+                <option value="SHA1">SHA-1 (40 karakter)</option>
+                <option value="SHA256">SHA-256 (64 karakter)</option>
+            </select>
+
+            <label class="input-label">File Wordlist (.txt)</label>
+            <input type="file" id="wordlist-file" accept=".txt">
+
+            <div class="toolbar">
+                <button class="btn-primary" onclick="crackHash()">💀 Start Cracking</button>
+                <button class="btn-danger" id="stop-btn" onclick="stopCracking()" style="display:none;">⏹️ Stop</button>
+            </div>
+
+            <div id="crack-status" class="status-box" style="display:none;"></div>
+            <div id="crack-result" class="result-box" style="display:none;"></div>
+        </div>
+
+        <div class="card">
+            <span style="color: var(--accent); font-weight: 600;">💡 Quick Hash Identifier</span>
+            <div style="margin-top:12px;">
+                <label class="input-label">Identifikasi tipe hash dari string</label>
+                <input type="text" id="hash-identify-input" placeholder="Paste hash di sini..." oninput="quickIdentifyHash(this.value)">
+                <div id="hash-identify-result"></div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- end main-content -->
 
 <script src="script.js"></script>
 </body>
